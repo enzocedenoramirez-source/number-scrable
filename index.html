@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Soup Word Search</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .grid { display: grid; gap: 5px; }
+        .cell { width: 30px; height: 30px; border: 1px solid #000; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .selected { background-color: yellow; }
+        .hidden { background-color: lightgray; }
+    </style>
+</head>
+<body>
+    <h1>Number Soup Word Search</h1>
+    <div id="level-selection">
+        <button onclick="startGame('easy')">Easy (10x10)</button>
+        <button onclick="startGame('medium')">Medium (12x12)</button>
+        <button onclick="startGame('hard')">Hard (14x14)</button>
+    </div>
+    <div id="game-area" style="display:none;">
+        <div id="grid" class="grid"></div>
+        <div>
+            <h2>Words to Find:</h2>
+            <ul id="words-list"></ul>
+        </div>
+        <button onclick="checkProgress()">Check Progress</button>
+        <div id="progress"></div>
+    </div>
+
+    <script>
+        const letterToNumber = {A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9, J: 10, K: 11, L: 12, M: 13, N: 14, O: 15, P: 16, Q: 17, R: 18, S: 19, T: 20, U: 21, V: 22, W: 23, X: 24, Y: 25, Z: 26};  
+        let gridSize;
+        let wordCount = 15;
+        let words = [];
+        let foundWords = [];
+
+        function startGame(difficulty) {
+            switch(difficulty) {
+                case 'easy': gridSize = 10; break;
+                case 'medium': gridSize = 12; break;
+                case 'hard': gridSize = 14; break;
+            }
+            generateGrid();
+            generateWords();
+            document.getElementById('game-area').style.display = 'block';
+        }
+
+        function generateGrid() {
+            const gridDiv = document.getElementById('grid');
+            gridDiv.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+            gridDiv.innerHTML = '';
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.onclick = () => selectCell(cell);
+                    gridDiv.appendChild(cell);
+                }
+            }
+        }
+
+        function generateWords() {
+            // Placeholder words for the example
+            words = ['WORD', 'SEARCH', 'NUMBERS', 'GAME', 'PLAY', 'FUN', 'PUZZLE', 'HIDDEN', 'CHASE', 'FIND', 'LIST', 'CELL', 'GRID', 'LEVEL', 'POINT', 'TRACK'];
+            // Shuffle and select words
+            words = words.sort(() => 0.5 - Math.random()).slice(0, wordCount);
+            updateWordsList();
+        }
+
+        function updateWordsList() {
+            const wordsList = document.getElementById('words-list');
+            wordsList.innerHTML = '';
+            words.forEach(word => {
+                const li = document.createElement('li');
+                li.innerText = word;
+                wordsList.appendChild(li);
+            });
+        }
+
+        function selectCell(cell) {
+            if (!cell.classList.contains('selected')) {
+                cell.classList.add('selected');
+                checkWord(cell.innerText);
+            }
+        }
+
+        function checkWord(selectedText) {
+            // Logic to check if the selected text matches any word in the list
+            if (words.includes(selectedText)) {
+                foundWords.push(selectedText);
+                cell.classList.add('hidden');
+            }
+        }
+
+        function checkProgress() {
+            let progressText = `Words found: ${foundWords.length} / ${wordCount}`;
+            document.getElementById('progress').innerText = progressText;
+        }
+    </script>
+</body>
+</html>
